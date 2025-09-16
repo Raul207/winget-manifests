@@ -1,0 +1,15 @@
+# Created using wingetcreate 1.10.3.0
+# yaml-language-server: $schema=https://aka.ms/winget-manifest.installer.1.10.0.schema.json
+
+PackageIdentifier: FortinetInc.FortiClientVPNOnlineInstallation
+PackageVersion: 7.4.3.1790
+InstallerType: exe
+InstallerSwitches:
+  Silent: /quiet /norestart
+  SilentWithProgress: /passive /norestart
+Installers:
+- Architecture: x64
+  InstallerUrl: https://links.fortinet.com/forticlient/win/vpnagent
+  InstallerSha256: A8F69EAA8AF029209CE937616AAD5CB751E9C732B9D17E5E1EAABD768E361D37
+ManifestType: installer
+ManifestVersion: 1.10.0
