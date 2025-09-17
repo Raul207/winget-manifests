@@ -1,0 +1,34 @@
+name: Build Winget Index
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install WingetCreate
+        run: |
+          winget install --id Microsoft.WingetCreate -e --source winget
+
+      - name: Generate index.db
+        run: |
+          # Creamos carpeta temporal para publicar
+          mkdir output
+          # Copiamos manifiestos
+          xcopy manifests output\manifests /E /I /Y
+          # Generamos índice usando WingetCreate
+          wingetcreate source export -o output
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v6
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./output
+          publish_branch: gh-pages
