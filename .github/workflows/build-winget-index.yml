@@ -1,9 +1,7 @@
 name: Build Winget Index
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch: # Permite ejecutar manualmente desde GitHub Actions
 
 jobs:
   build:
@@ -13,17 +11,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Install WingetCreate
-        run: |
-          winget install --id Microsoft.WingetCreate -e --source winget
+      - name: List root folder (debug)
+        run: dir
 
-      - name: Generate index.db
+      - name: List manifests folder (debug)
+        run: dir manifests /S
+
+      - name: Ensure output folder exists
+        run: mkdir output
+
+      - name: Copy manifests to output
+        run: Copy-Item -Path .\manifests\* -Destination .\output\manifests -Recurse
+
+      - name: Generate Winget index
+        shell: pwsh
         run: |
-          # Creamos carpeta temporal para publicar
-          mkdir output
-          # Copiamos manifiestos
-          xcopy manifests output\manifests /E /I /Y
-          # Generamos índice usando WingetCreate
           wingetcreate source export -o output
 
       - name: Deploy to GitHub Pages
