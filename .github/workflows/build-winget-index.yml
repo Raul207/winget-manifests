@@ -1,36 +1,42 @@
 name: Build Winget Index
 
 on:
-  workflow_dispatch: # Permite ejecutar manualmente desde GitHub Actions
+  workflow_dispatch:  # Ejecutar manualmente
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
+      # 1️⃣ Clonar el repositorio
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: List root folder (debug)
-        run: dir
+      # 2️⃣ Instalar WingetCreate
+      - name: Install WingetCreate
+        shell: pwsh
+        run: |
+          winget install --id Microsoft.WingetCreate -e --source winget
 
-      - name: List manifests folder (debug)
-        run: dir manifests /S
-
+      # 3️⃣ Crear carpeta de salida
       - name: Ensure output folder exists
         run: mkdir output
 
+      # 4️⃣ Copiar los manifiestos a output
       - name: Copy manifests to output
         run: Copy-Item -Path .\manifests\* -Destination .\output\manifests -Recurse
 
+      # 5️⃣ Generar index.db
       - name: Generate Winget index
         shell: pwsh
         run: |
           wingetcreate source export -o output
 
+      # 6️⃣ Publicar en gh-pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output
           publish_branch: gh-pages
+
