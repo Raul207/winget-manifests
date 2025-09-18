@@ -16,9 +16,8 @@ jobs:
       - name: Download WingetCreate
         shell: pwsh
         run: |
-          Invoke-WebRequest -Uri https://github.com/microsoft/winget-create/releases/latest/download/wingetcreate.zip -OutFile wingetcreate.zip
-          Expand-Archive -Path wingetcreate.zip -DestinationPath wingetcreate
-          dir wingetcreate
+          Invoke-WebRequest -Uri https://github.com/microsoft/winget-create/releases/download/v1.10.3.0/wingetcreate.exe -OutFile wingetcreate.exe
+          dir
 
       # 3️⃣ Crear carpeta de salida
       - name: Ensure output folder exists
@@ -32,7 +31,7 @@ jobs:
       - name: Generate Winget index
         shell: pwsh
         run: |
-          .\wingetcreate\wingetcreate.exe source export -o output
+          .\wingetcreate.exe source export -o output
 
       # 6️⃣ Publicar en gh-pages
       - name: Deploy to GitHub Pages
@@ -41,5 +40,6 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output
           publish_branch: gh-pages
+
 
 
