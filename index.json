@@ -1,0 +1,13 @@
+{
+  "Sources": [
+    {
+      "Name": "FortinetSource",
+      "Type": "Microsoft.PreIndexed.Package",
+      "Arg": "Arg": "https://raul207.github.io/winget-manifests/index.json",
+      "Data": {
+        "PackageMatchFields": ["Id", "Name", "Moniker"],
+        "Schema": "1.0.0"
+      }
+    }
+  ]
+}
