@@ -12,11 +12,13 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      # 2️⃣ Instalar WingetCreate
-      - name: Install WingetCreate
+      # 2️⃣ Descargar WingetCreate directamente del release oficial
+      - name: Download WingetCreate
         shell: pwsh
         run: |
-          winget install --id Microsoft.WingetCreate -e --source winget
+          Invoke-WebRequest -Uri https://github.com/microsoft/winget-create/releases/latest/download/wingetcreate.zip -OutFile wingetcreate.zip
+          Expand-Archive -Path wingetcreate.zip -DestinationPath wingetcreate
+          dir wingetcreate
 
       # 3️⃣ Crear carpeta de salida
       - name: Ensure output folder exists
@@ -26,11 +28,11 @@ jobs:
       - name: Copy manifests to output
         run: Copy-Item -Path .\manifests\* -Destination .\output\manifests -Recurse
 
-      # 5️⃣ Generar index.db
+      # 5️⃣ Generar index.db usando la copia local de wingetcreate
       - name: Generate Winget index
         shell: pwsh
         run: |
-          wingetcreate source export -o output
+          .\wingetcreate\wingetcreate.exe source export -o output
 
       # 6️⃣ Publicar en gh-pages
       - name: Deploy to GitHub Pages
@@ -39,4 +41,5 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./output
           publish_branch: gh-pages
+
 
